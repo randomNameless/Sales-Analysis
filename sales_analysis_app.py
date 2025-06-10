@@ -42,10 +42,13 @@ if show_raw:
         st.subheader("Raw Data")
         st.dataframe(sales_df)
 if show_info:
-        buffer = io.StringIO()
-        sales_df.info(buf=buffer)
-        st.subheader("Data Info")
-        st.text(buffer.getvalue())
+    st.subheader("Data Info")
+    info_df = pd.DataFrame({
+        'Column': sales_df.columns,
+        'Non-Null Count': sales_df.notnull().sum().values,
+        'Dtype': sales_df.dtypes.values.astype(str)
+    })
+    st.dataframe(info_df)
 if show_desc:
         st.subheader("Data Description")
         st.write(sales_df.describe())
