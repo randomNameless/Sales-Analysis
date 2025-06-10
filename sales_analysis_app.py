@@ -1,16 +1,12 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 import io
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from prophet import Prophet
-from pmdarima import auto_arima
 import plotly.graph_objects as go
-from statsmodels.tsa.seasonal import seasonal_decompose
 import os
 import plotly.express as px
 from prophet import Prophet
