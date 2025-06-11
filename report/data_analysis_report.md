@@ -130,6 +130,8 @@ This project analyzes Walmart's historical sales data to uncover trends, forecas
 - **Store Clustering (Unsupervised Learning)**  
   Stores were grouped based on total sales, average weekly sales, and holiday sales impact.  
   The results reveal clear segments of store behavior and performance.  
+  Notably, stores **2, 4, 10, 13, 14, 20, and 27** show **high sales and strong holiday sensitivity**, making them ideal for **priority resource allocation** such as focused promotions and inventory planning.  
+  Conversely, stores **3, 5, 33, 35, 38, and 44** show **low sales and low holiday sensitivity**, suggesting these locations may benefit from **targeted promotions or operational improvements**.  
   Such clustering enables more tailored strategies per segment.
 
 - **Feature Correlation Heatmap**  
@@ -182,7 +184,32 @@ This project analyzes Walmart's historical sales data to uncover trends, forecas
 
 ---
 
-## 7. Links
+## 7. Future Work
+
+- **Enhance feature engineering**  
+  Create additional variables such as rolling averages, holiday countdowns, and month/week encodings to better capture sales drivers.
+
+- **Expand the dataset**  
+  Include more recent data beyond 2012 and enrich it with geographic, product-level, and promotional features for deeper analysis.
+
+- **Test advanced models**  
+  Apply non-linear or ensemble models such as Random Forest, XGBoost, or LightGBM to improve predictive accuracy over linear baselines.
+
+- **Implement regional analysis**  
+  If location information becomes available, analyze store performance across regions to uncover localized trends and opportunities.
+
+- **Customer segmentation**  
+  Introduce behavioral or demographic data (if obtainable) to enable personalized marketing strategies and better demand targeting.
+
+- **Validate with real promotions**  
+  Backtest model performance and anomaly detection against known promotional periods to evaluate business impact.
+
+- **Build real-time dashboard**  
+  Connect the app to a live database or API to support continuous updates, automated monitoring, and business decision-making in real time.
+
+---
+
+## 8. Links
 
 - [Live Streamlit App](https://sales-analysis-bangyanju.streamlit.app)
 - [GitHub Repository](https://github.com/randomNameless/Sales-Analysis)
