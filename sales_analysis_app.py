@@ -90,15 +90,6 @@ fig = px.box(
 # Display the interactive chart
 st.plotly_chart(fig, use_container_width=True)
 
-# ---- Simple Regression ----
-st.subheader("Simple Linear Regression")
-X = sales_df[['Temperature', 'Fuel_Price', 'CPI', 'Unemployment']]
-y = sales_df['Weekly_Sales']
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
-model_lr = LinearRegression().fit(X_train, y_train)
-preds = model_lr.predict(X_test)
-st.write("**RMSE:**", round(np.sqrt(mean_squared_error(y_test, preds)), 2))
-
 # ---- Prophet Forecast ----
 st.subheader("Prophet Forecast (12 weeks)")
 # Prepare data
