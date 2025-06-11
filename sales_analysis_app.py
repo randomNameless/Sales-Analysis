@@ -90,76 +90,44 @@ fig = px.box(
 # Display the interactive chart
 st.plotly_chart(fig, use_container_width=True)
 
-# ---- Prophet Forecast ----
-st.subheader("Prophet Forecast (12 weeks)")
-# Prepare data
-weekly_sales = sales_df.groupby('Date')['Weekly_Sales'].sum().sort_index()
-df_prophet = weekly_sales.reset_index().rename(columns={'Date': 'ds', 'Weekly_Sales': 'y'})
-# Fit model
-model_prophet = Prophet()
-model_prophet.fit(df_prophet)
-# Forecast
-future = model_prophet.make_future_dataframe(periods=12, freq='W')
-forecast = model_prophet.predict(future)
-# Interactive plot with Plotly
-fig_prophet = plot_plotly(model_prophet, forecast)
-st.plotly_chart(fig_prophet)
 
-# ----  Sales Forecast Confidence Intervals ----
-st.subheader(" Prophet Forecast with Confidence Intervals")
+# ---- Prophet Forecast (Unified with Confidence Intervals) ----
+st.subheader("Prophet Forecast (12 Weeks)")
 
 # --- Select confidence interval ---
 interval_width = st.selectbox("Select confidence interval width:", [0.80, 0.90, 0.95], index=1)
-# Prepare data
-df=sales_df
-weekly_sales = df.groupby('Date')['Weekly_Sales'].sum().sort_index()
-weekly_sales = weekly_sales.reset_index().rename(columns={'Date': 'ds', 'Weekly_Sales': 'y'})
-# Fit Prophet with selected interval
+
+# --- Prepare data for Prophet ---
+weekly_sales = sales_df.groupby('Date')['Weekly_Sales'].sum().sort_index().reset_index()
+df_prophet = weekly_sales.rename(columns={'Date': 'ds', 'Weekly_Sales': 'y'})
+
+# --- Train Prophet model ---
 model = Prophet(interval_width=interval_width)
-model.fit(weekly_sales)
-# Forecast
+model.fit(df_prophet)
+
+# --- Make future predictions ---
 future = model.make_future_dataframe(periods=12, freq='W-FRI')
 forecast = model.predict(future)
-# Merge for display
-merged = pd.merge(weekly_sales, forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']], on='ds', how='outer')
-# Plot
-fig = go.Figure()
-# Actual
-fig.add_trace(go.Scatter(
-    x=merged['ds'], y=merged['y'], mode='lines+markers',
-    name='Actual Sales', line=dict(color='black')
-))
-# Forecast
-fig.add_trace(go.Scatter(
-    x=merged['ds'], y=merged['yhat'], mode='lines',
-    name='Forecast', line=dict(color='blue')
-))
-# Confidence band
-fig.add_trace(go.Scatter(
-    x=pd.concat([merged['ds'], merged['ds'][::-1]]),
-    y=pd.concat([merged['yhat_upper'], merged['yhat_lower'][::-1]]),
-    fill='toself',
-    fillcolor='rgba(135, 206, 250, 0.3)',
-    line=dict(color='rgba(255,255,255,0)'),
-    hoverinfo="skip",
-    name=f'{int(interval_width*100)}% Confidence Interval'
-))
-fig.update_layout(
-    title=f'Forecast with {int(interval_width*100)}% Confidence Interval',
-    xaxis_title='Date',
-    yaxis_title='Weekly Sales',
-    template='plotly_white'
-)
-st.plotly_chart(fig)
 
-# --- Download CSV ---
+# --- Interactive Prophet plot (Plotly) ---
+fig_prophet = plot_plotly(model, forecast)
+st.plotly_chart(fig_prophet, use_container_width=True)
+st.markdown("""
+**Chart Explanation**  
+- **Black dots and line**: Actual weekly sales (historical data).  
+- **Blue line**: Forecasted sales for upcoming 12 weeks.  
+- **Shaded area**: {0}% confidence interval, showing uncertainty range of the forecast.  
+""".format(int(interval_width*100)))
+
+# --- Download CSV Button ---
 csv = forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].to_csv(index=False)
 st.download_button(
-    label=" Download Forecast with Confidence Intervals",
+    label="Download Forecast CSV",
     data=csv,
     file_name=f"forecast_confidence_{int(interval_width*100)}.csv",
     mime="text/csv"
 )
+
 
 # ---- Anomaly Detection ----
 st.subheader("Sales Anomaly Detection")
